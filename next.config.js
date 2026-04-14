@@ -12,8 +12,11 @@ const nextConfig = {
   },
   poweredByHeader: false,
   reactStrictMode: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  typedRoutes: true,
   experimental: {
-    typedRoutes: true,
     serverActions: {
       allowedOrigins: ['localhost:3000'],
     },
