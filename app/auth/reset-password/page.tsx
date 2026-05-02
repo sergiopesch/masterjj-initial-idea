@@ -15,7 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 
 const formSchema = z.object({
@@ -24,7 +23,6 @@ const formSchema = z.object({
 
 export default function ResetPasswordPage() {
   const [isLoading, setIsLoading] = useState(false)
-  const supabase = createClient()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,30 +32,16 @@ export default function ResetPasswordPage() {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      setIsLoading(true)
-      const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
-        redirectTo: `${location.origin}/auth/callback`,
-      })
-
-      if (error) {
-        toast.error(error.message)
-        return
-      }
-
-      toast.success("Check your email for the password reset link")
-    } catch (error) {
-      toast.error("Something went wrong. Please try again.")
-    } finally {
-      setIsLoading(false)
-    }
+    setIsLoading(true)
+    toast.success(`Password reset is disabled for demo mode: ${values.email}`)
+    setIsLoading(false)
   }
 
   return (
     <div className="container flex h-screen w-screen flex-col items-center justify-center">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
         <div className="flex flex-col space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-semibold">
             Reset your password
           </h1>
           <p className="text-sm text-muted-foreground">

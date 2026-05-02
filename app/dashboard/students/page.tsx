@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { getUser } from "@/lib/auth"
 import {
@@ -41,9 +41,15 @@ export default function StudentsPage() {
   const router = useRouter()
   const user = getUser()
   const [search, setSearch] = useState("")
+  const canAccess = !!user && ["admin", "instructor"].includes(user.role)
 
-  if (!user || !["admin", "instructor"].includes(user.role)) {
-    router.push("/dashboard")
+  useEffect(() => {
+    if (!canAccess) {
+      router.push("/dashboard")
+    }
+  }, [canAccess, router])
+
+  if (!canAccess) {
     return null
   }
 
@@ -59,26 +65,26 @@ export default function StudentsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Students</h1>
+          <h1 className="text-3xl font-bold">Practitioners</h1>
           <p className="text-muted-foreground">
-            Manage and track your students' progress
+            Track the people you coach without losing the human work.
           </p>
         </div>
         <Button>
           <UserPlus className="mr-2 h-4 w-4" />
-          Add Student
+          Add Practitioner
         </Button>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
         <StatsCard
-          title="Total Students"
+          title="Practitioners"
           value="45"
           description="+2 from last month"
           icon={UserPlus}
         />
         <StatsCard
-          title="Average Attendance"
+          title="Training Consistency"
           value="87%"
           description="+5% from last month"
           icon={Calendar}
@@ -93,15 +99,15 @@ export default function StudentsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Student Management</CardTitle>
+          <CardTitle>Practitioner Records</CardTitle>
           <CardDescription>
-            View and manage all your students in one place
+            Review training history, readiness, and coach notes in one place.
           </CardDescription>
           <div className="flex items-center gap-4 pt-4">
             <div className="relative flex-1">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search students..."
+                placeholder="Search practitioners..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="pl-8"

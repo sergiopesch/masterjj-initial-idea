@@ -1,3 +1,5 @@
+const path = require('path')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: { 
@@ -10,10 +12,12 @@ const nextConfig = {
     ],
     unoptimized: process.env.NODE_ENV === 'development',
   },
+  allowedDevOrigins: ['127.0.0.1'],
   poweredByHeader: false,
   reactStrictMode: true,
-  typescript: {
-    ignoreBuildErrors: true,
+  devIndicators: false,
+  turbopack: {
+    root: path.resolve(__dirname),
   },
   typedRoutes: true,
   experimental: {

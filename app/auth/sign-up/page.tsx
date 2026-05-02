@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -16,7 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 import { ArrowLeft } from "lucide-react"
 
@@ -25,10 +23,8 @@ const formSchema = z.object({
 })
 
 export default function SignUpPage() {
-  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
-  const supabase = createClient()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -38,30 +34,10 @@ export default function SignUpPage() {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      setIsLoading(true)
-      const { error } = await supabase.auth.signInWithOtp({
-        email: values.email,
-        options: {
-          emailRedirectTo: `${location.origin}/auth/callback`,
-          data: {
-            isNewUser: true,
-          },
-        },
-      })
-
-      if (error) {
-        toast.error(error.message)
-        return
-      }
-
-      setEmailSent(true)
-      toast.success("Check your email to confirm your account")
-    } catch (error) {
-      toast.error("Something went wrong. Please try again.")
-    } finally {
-      setIsLoading(false)
-    }
+    setIsLoading(true)
+    setEmailSent(true)
+    toast.success(`Demo account ready for ${values.email}`)
+    setIsLoading(false)
   }
 
   return (
@@ -92,7 +68,7 @@ export default function SignUpPage() {
       <div className="lg:p-8">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col space-y-2 text-center">
-            <h1 className="text-2xl font-semibold tracking-tight">
+            <h1 className="text-2xl font-semibold">
               Create an account
             </h1>
             <p className="text-sm text-muted-foreground">

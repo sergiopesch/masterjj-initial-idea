@@ -1,51 +1,30 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { getUserProfile } from '@/lib/auth'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { toast } from '@/components/ui/use-toast'
 import { Icons } from '@/components/ui/icons'
 import {
   Activity,
   Calendar,
   Trophy,
-  LogOut,
 } from 'lucide-react'
 import type { UserProfile } from '@/lib/types/database'
 import { AppLayout } from '@/components/layout/app-layout'
 
 export default function HomePage() {
-  const router = useRouter()
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
-  const supabase = createClientComponentClient()
 
   useEffect(() => {
     let mounted = true
 
     const loadProfile = async () => {
-      try {
-        const userProfile = await getUserProfile()
-        
-        if (mounted) {
-          if (!userProfile || !userProfile.firstname || !userProfile.lastname || !userProfile.phone) {
-            setLoading(false)
-            router.replace('/auth/complete-profile')
-            return
-          }
+      const userProfile = await getUserProfile()
 
-          setProfile(userProfile)
-          setLoading(false)
-        }
-      } catch (error) {
-        console.error('Error loading profile:', error)
-        if (mounted) {
-          setLoading(false)
-          router.replace('/auth/sign-in')
-        }
+      if (mounted) {
+        setProfile(userProfile)
+        setLoading(false)
       }
     }
 
@@ -54,7 +33,7 @@ export default function HomePage() {
     return () => {
       mounted = false
     }
-  }, [router, supabase])
+  }, [])
 
   if (loading) {
     return (

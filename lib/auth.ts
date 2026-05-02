@@ -1,141 +1,84 @@
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import type { UserProfile, UpdateUserProfile, Database } from './types/database'
+import type { UpdateUserProfile, UserProfile } from './types/database'
 
 interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: "admin" | "instructor" | "practitioner";
+  id: string
+  email: string
+  name: string
+  role: 'admin' | 'instructor' | 'practitioner'
+}
+
+const demoProfile: UserProfile = {
+  id: 'demo-user',
+  firstname: 'Sergio',
+  lastname: 'Practitioner',
+  email: 'demo@masterjj.app',
+  phone: '+10000000000',
+  role: 'student',
+  created_at: new Date(2026, 0, 1).toISOString(),
+  last_sign_in_at: new Date().toISOString(),
+  is_anonymous: false,
+  auth_provider: 'demo',
 }
 
 const users = {
   admin: {
-    id: "1",
-    email: "admin@example.com",
-    password: "password",
-    name: "Admin User",
-    role: "admin",
+    id: '1',
+    email: 'admin@example.com',
+    password: 'password',
+    name: 'Admin User',
+    role: 'admin',
   },
   instructor: {
-    id: "2",
-    email: "instructor@example.com",
-    password: "password",
-    name: "Instructor User",
-    role: "instructor",
+    id: '2',
+    email: 'instructor@example.com',
+    password: 'password',
+    name: 'Instructor User',
+    role: 'instructor',
   },
   user: {
-    id: "3",
-    email: "user@example.com",
-    password: "password",
-    name: "Regular User",
-    role: "practitioner",
+    id: '3',
+    email: 'user@example.com',
+    password: 'password',
+    name: 'Regular User',
+    role: 'practitioner',
   },
-} as const;
+} as const
 
 export async function authenticate(
   email: string,
   password: string
 ): Promise<User | null> {
   const user = Object.values(users).find(
-    (u) => u.email === email && u.password === password
-  );
+    (candidate) => candidate.email === email && candidate.password === password
+  )
 
-  if (!user) return null;
+  if (!user) return null
 
-  const { password: _, ...userWithoutPassword } = user;
-  return userWithoutPassword;
-}
-
-export async function getUserProfile(): Promise<UserProfile | null> {
-  const supabase = createClientComponentClient<Database>()
-  
-  try {
-    console.log('Getting user session...')
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-    
-    if (sessionError) {
-      console.error('Session error:', sessionError)
-      return null
-    }
-    
-    if (!session?.user) {
-      console.log('No session found')
-      return null
-    }
-    
-    console.log('Getting user profile...')
-    const { data: profile, error: profileError } = await supabase
-      .from('users')
-      .select('*')
-      .eq('id', session.user.id)
-      .single()
-
-    if (profileError) {
-      if (profileError.code === 'PGRST116') {
-        console.log('Profile not found')
-      } else {
-        console.error('Error fetching profile:', profileError)
-      }
-      return null
-    }
-
-    if (!profile) {
-      console.log('No profile data returned')
-      return null
-    }
-
-    return profile
-  } catch (error) {
-    console.error('Unexpected error in getUserProfile:', error)
-    return null
+  const userWithoutPassword: User = {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
   }
+  return userWithoutPassword
 }
 
-export async function updateUserProfile(updates: UpdateUserProfile): Promise<UserProfile | null> {
-  const supabase = createClientComponentClient<Database>()
-  
-  try {
-    console.log('Getting user...')
-    const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser()
+export async function getUserProfile(): Promise<UserProfile> {
+  return demoProfile
+}
 
-    if (userError) {
-      console.error('Error getting user:', userError)
-      throw userError
-    }
-    
-    if (!currentUser) {
-      console.error('No user found')
-      throw new Error('Not authenticated')
-    }
-
-    console.log('Updating profile...')
-    const { data, error } = await supabase
-      .from('users')
-      .update({
-        ...updates,
-        auth_provider: 'google' // Ensure auth_provider is always set
-      })
-      .eq('id', currentUser.id)
-      .select()
-      .single()
-
-    if (error) {
-      console.error('Error updating profile:', error)
-      throw error
-    }
-
-    console.log('Profile updated:', data)
-    return data
-  } catch (error) {
-    console.error('Unexpected error updating user profile:', error)
-    throw error
+export async function updateUserProfile(
+  updates: UpdateUserProfile
+): Promise<UserProfile> {
+  return {
+    ...demoProfile,
+    ...updates,
+    last_sign_in_at: new Date().toISOString(),
   }
 }
 
 export async function checkUserRole(allowedRoles: string[]) {
-  const profile = await getUserProfile()
-  if (!profile) return false
-  return allowedRoles.includes(profile.role)
+  return allowedRoles.includes(demoProfile.role)
 }
 
 export async function isAdmin() {
@@ -158,39 +101,25 @@ export function getRoleBasedRedirect(role: string) {
 }
 
 export async function signOut() {
-  const supabase = createClientComponentClient()
-  
-  try {
-    console.log('Signing out...')
-    const { error } = await supabase.auth.signOut()
-    if (error) {
-      console.error('Error signing out:', error)
-      throw error
-    }
-    console.log('Successfully signed out')
-    removeUser()
-    return { error: null }
-  } catch (error) {
-    console.error('Unexpected error signing out:', error)
-    throw error
-  }
+  removeUser()
+  return { error: null }
 }
 
 export function getUser(): User | null {
   if (typeof window === 'undefined') return null
-  const userStr = localStorage.getItem("user");
-  if (!userStr) return null;
-  return JSON.parse(userStr);
+  const userStr = localStorage.getItem('user')
+  if (!userStr) return null
+  return JSON.parse(userStr)
 }
 
 export function setUser(user: User) {
   if (typeof window !== 'undefined') {
-    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(user))
   }
 }
 
 export function removeUser() {
   if (typeof window !== 'undefined') {
-    localStorage.removeItem("user");
+    localStorage.removeItem('user')
   }
 }

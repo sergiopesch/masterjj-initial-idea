@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { toast } from "sonner"
 import { Icons } from "@/components/ui/icons"
 import {
@@ -17,46 +16,12 @@ import {
 export default function SignInPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const supabase = createClientComponentClient()
 
   async function signInWithGoogle() {
-    try {
-      setIsLoading(true)
-      
-      // Get the current URL for the redirect
-      const redirectUrl = `${window.location.origin}/auth/callback`
-      console.log('Starting Google sign in...')
-      console.log('Redirect URL:', redirectUrl)
-
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectUrl,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-          skipBrowserRedirect: true,
-          scopes: 'email profile',
-        },
-      })
-
-      if (error) {
-        console.error('Error signing in with Google:', error)
-        toast.error("Failed to sign in with Google. Please try again.")
-        return
-      }
-
-      if (data?.url) {
-        console.log('OAuth URL:', data.url)
-        window.location.href = data.url
-      }
-    } catch (error: any) {
-      console.error('Unexpected error:', error)
-      toast.error(error.message || "An unexpected error occurred. Please try again.")
-    } finally {
-      setIsLoading(false)
-    }
+    setIsLoading(true)
+    toast.success("Demo session started")
+    router.push('/dashboard')
+    setIsLoading(false)
   }
 
   return (

@@ -1,36 +1,40 @@
 "use client"
 
 import Link from "next/link"
-import { BookOpen, Menu } from "lucide-react"
+import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useState } from "react"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
 
 const navigation = [
-  { name: "Features", href: "#features" },
-  { name: "How It Works", href: "#how-it-works" },
-  { name: "Testimonials", href: "#testimonials" },
-  { name: "Benefits", href: "#benefits" },
+  { name: "Practice", href: "#features" },
+  { name: "Method", href: "#how-it-works" },
+  { name: "Study", href: "#video-showcase" },
+  { name: "Path", href: "#testimonials" },
 ]
 
 export function SiteHeader() {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/86 backdrop-blur-xl supports-[backdrop-filter]:bg-background/78">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link className="flex items-center space-x-2" href="/">
-            <BookOpen className="h-6 w-6" />
-            <span className="hidden font-bold sm:inline-block">Master BJJ</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-md border border-foreground/80 bg-card text-xs font-semibold shadow-sm">
+              MJ
+            </span>
+            <span className="hidden text-lg font-semibold sm:inline-block">
+              MasterJJ
+            </span>
           </Link>
-          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+          <nav className="hidden md:flex items-center space-x-7 text-sm font-medium">
             {navigation.map((item) => (
               <Link
                 key={item.name}
-                href={item.href}
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
+                href={item.href as any}
+                className="relative text-muted-foreground transition-colors after:absolute after:-bottom-2 after:left-0 after:h-px after:w-0 after:bg-primary after:transition-all hover:text-foreground hover:after:w-full"
               >
                 {item.name}
               </Link>
@@ -40,11 +44,11 @@ export function SiteHeader() {
         <div className="flex items-center gap-4">
           <ThemeToggle />
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" asChild>
+            <Button variant="ghost" asChild className="font-medium">
               <Link href="/login">Log in</Link>
             </Button>
-            <Button asChild>
-              <Link href="/login">Sign up</Link>
+            <Button asChild className="gap-2 shadow-sm shadow-primary/15">
+              <Link href="/auth/sign-up">Begin</Link>
             </Button>
           </div>
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -59,7 +63,7 @@ export function SiteHeader() {
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
-                    href={item.href}
+                    href={item.href as any}
                     onClick={() => setIsOpen(false)}
                     className="block px-2 py-1 text-lg"
                   >
@@ -71,7 +75,7 @@ export function SiteHeader() {
                     <Link href="/login">Log in</Link>
                   </Button>
                   <Button asChild>
-                    <Link href="/login">Sign up</Link>
+                    <Link href="/auth/sign-up">Begin</Link>
                   </Button>
                 </div>
               </nav>

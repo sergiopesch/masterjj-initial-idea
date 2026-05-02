@@ -18,57 +18,57 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    --background: 39 29% 97%;
+    --foreground: 210 10% 9%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --card-foreground: 210 10% 9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
+    --primary: 0 67% 39%;
+    --primary-foreground: 0 0% 99%;
+    --secondary: 204 11% 15%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 39 18% 91%;
+    --muted-foreground: 204 8% 41%;
+    --accent: 157 13% 73%;
+    --accent-foreground: 210 10% 9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
+    --border: 39 14% 84%;
     --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --ring: 0 67% 39%;
+    --chart-1: 0 67% 39%;
+    --chart-2: 204 11% 15%;
+    --chart-3: 157 13% 48%;
+    --chart-4: 216 9% 46%;
+    --chart-5: 39 18% 76%;
     --radius: 0.5rem;
   }
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
+    --background: 204 12% 9%;
+    --foreground: 39 24% 96%;
+    --card: 204 10% 12%;
+    --card-foreground: 39 24% 96%;
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
+    --primary: 0 56% 48%;
+    --primary-foreground: 0 0% 99%;
+    --secondary: 39 9% 88%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
+    --muted: 204 8% 18%;
+    --muted-foreground: 39 10% 70%;
+    --accent: 157 11% 52%;
+    --accent-foreground: 39 24% 96%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
+    --border: 204 7% 24%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --chart-1: 0 56% 48%;
+    --chart-2: 39 9% 88%;
+    --chart-3: 157 11% 52%;
+    --chart-4: 216 7% 56%;
+    --chart-5: 39 16% 76%;
   }
 }
 
@@ -77,6 +77,164 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    background:
+      linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted) / 0.5) 48%, hsl(var(--background)) 100%);
+    font-family: Optima, "Avenir Next", "Helvetica Neue", system-ui, sans-serif;
+    font-size: 16px;
+  }
+  h1,
+  h2,
+  h3,
+  .display-copy {
+    font-family: Optima, "Avenir Next", "Helvetica Neue", system-ui, sans-serif;
+    letter-spacing: 0;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  ::selection {
+    background: hsl(var(--primary) / 0.18);
+  }
+}
+
+@layer components {
+  .flow-page {
+    position: relative;
+    isolation: isolate;
+    overflow-x: clip;
+  }
+
+  .flow-page::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+      repeating-linear-gradient(118deg, transparent 0 5.8rem, hsl(var(--accent) / 0.055) 5.8rem 5.86rem, transparent 5.86rem 12rem),
+      linear-gradient(110deg, transparent 0 24%, hsl(var(--primary) / 0.045) 24% 25%, transparent 25% 100%);
+  }
+
+  .flow-section {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .flow-section::before {
+    content: "";
+    position: absolute;
+    inset-inline: max(1rem, calc((100vw - 1180px) / 2));
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--border)), transparent);
+  }
+
+  .movement-thread {
+    position: absolute;
+    inset: auto -8rem 8% auto;
+    width: min(44vw, 34rem);
+    height: 72%;
+    border: 1px solid hsl(var(--primary) / 0.2);
+    border-left: 0;
+    border-bottom: 0;
+    border-radius: 50% 0 0 0;
+    transform: rotate(-11deg);
+    opacity: 0.8;
+    pointer-events: none;
+  }
+
+  .mat-grid {
+    background-image:
+      linear-gradient(hsl(var(--foreground) / 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--foreground) / 0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .tatami-panel {
+    background:
+      linear-gradient(145deg, hsl(var(--card) / 0.98), hsl(var(--muted) / 0.44)),
+      repeating-linear-gradient(
+        112deg,
+        hsl(var(--foreground) / 0.025) 0 1px,
+        transparent 1px 28px
+      );
+    border-radius: var(--radius);
+    box-shadow: 0 24px 80px hsl(var(--foreground) / 0.1);
+  }
+
+  .belt-stripe {
+    background: linear-gradient(90deg, hsl(var(--foreground)), hsl(var(--primary)));
+  }
+
+  .flow-card {
+    border-radius: var(--radius);
+    border: 1px solid hsl(var(--border) / 0.82);
+    background:
+      linear-gradient(145deg, hsl(var(--card) / 0.98), hsl(var(--muted) / 0.26)),
+      hsl(var(--card));
+    box-shadow: 0 14px 40px hsl(var(--foreground) / 0.055);
+    transition:
+      transform 260ms ease,
+      border-color 260ms ease,
+      box-shadow 260ms ease,
+      background 260ms ease;
+  }
+
+  .flow-card:hover {
+    transform: translateY(-4px);
+    border-color: hsl(var(--primary) / 0.28);
+    box-shadow: 0 22px 58px hsl(var(--foreground) / 0.09);
+  }
+
+  .flow-panel {
+    border-radius: var(--radius);
+    border: 1px solid hsl(var(--border) / 0.82);
+    background:
+      linear-gradient(150deg, hsl(var(--card)), hsl(var(--muted) / 0.34)),
+      hsl(var(--card));
+    box-shadow: 0 20px 64px hsl(var(--foreground) / 0.075);
+  }
+
+  .flow-rail {
+    position: relative;
+  }
+
+  .flow-rail::before {
+    content: "";
+    position: absolute;
+    inset: 2rem auto 2rem 1.25rem;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, hsl(var(--primary) / 0.35), transparent);
+  }
+
+  .reveal-flow {
+    animation: float-in 680ms ease both;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .drift-slow {
+      animation: drift-slow 9s ease-in-out infinite alternate;
+    }
+  }
+
+  @keyframes float-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes drift-slow {
+    from {
+      transform: translate3d(0, 0, 0) rotate(-11deg);
+    }
+    to {
+      transform: translate3d(0, -10px, 0) rotate(-9deg);
+    }
   }
 }

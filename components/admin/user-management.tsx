@@ -1,7 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useMemo, useState } from 'react'
 import {
   Table,
   TableBody,
@@ -17,11 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/components/ui/use-toast'
-import { Shield, GraduationCap, User } from 'lucide-react'
-import type { Database, UserProfile, UserRole } from '@/lib/types/database'
+import { GraduationCap, Shield, User } from 'lucide-react'
+import type { UserProfile, UserRole } from '@/lib/types/database'
 
 const roleIcons = {
   admin: Shield,
@@ -29,91 +27,82 @@ const roleIcons = {
   student: User,
 } as const
 
+const demoUsers: UserProfile[] = [
+  {
+    id: 'demo-admin',
+    firstname: 'Ari',
+    lastname: 'Admin',
+    email: 'admin@masterjj.app',
+    phone: '+10000000001',
+    role: 'admin',
+    created_at: new Date(2026, 0, 1).toISOString(),
+    last_sign_in_at: new Date().toISOString(),
+    is_anonymous: false,
+    auth_provider: 'demo',
+  },
+  {
+    id: 'demo-instructor',
+    firstname: 'Maya',
+    lastname: 'Instructor',
+    email: 'coach@masterjj.app',
+    phone: '+10000000002',
+    role: 'instructor',
+    created_at: new Date(2026, 0, 5).toISOString(),
+    last_sign_in_at: new Date().toISOString(),
+    is_anonymous: false,
+    auth_provider: 'demo',
+  },
+  {
+    id: 'demo-student',
+    firstname: 'Sergio',
+    lastname: 'Practitioner',
+    email: 'demo@masterjj.app',
+    phone: '+10000000003',
+    role: 'student',
+    created_at: new Date(2026, 0, 10).toISOString(),
+    last_sign_in_at: new Date().toISOString(),
+    is_anonymous: false,
+    auth_provider: 'demo',
+  },
+]
+
 export function UserManagement() {
-  const [users, setUsers] = useState<UserProfile[]>([])
-  const [loading, setLoading] = useState(true)
+  const [users, setUsers] = useState<UserProfile[]>(demoUsers)
   const [searchTerm, setSearchTerm] = useState('')
-  const supabase = createClientComponentClient<Database>()
 
-  useEffect(() => {
-    loadUsers()
-  }, [])
-
-  async function loadUsers() {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .order('created_at', { ascending: false })
-
-      if (error) throw error
-      
-      // Ensure all users have a valid role
-      const validUsers = (data || []).map(user => ({
-        ...user,
-        role: (user.role as UserRole) || 'student'
-      }))
-      
-      setUsers(validUsers)
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to load users',
-        variant: 'destructive',
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function updateUserRole(userId: string, newRole: UserRole) {
-    try {
-      const { error } = await supabase
-        .from('users')
-        .update({ role: newRole })
-        .eq('id', userId)
-
-      if (error) throw error
-
-      setUsers(users.map(user => 
+  function updateUserRole(userId: string, newRole: UserRole) {
+    setUsers((currentUsers) =>
+      currentUsers.map((user) =>
         user.id === userId ? { ...user, role: newRole } : user
-      ))
-
-      toast({
-        title: 'Success',
-        description: 'User role updated successfully',
-      })
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to update user role',
-        variant: 'destructive',
-      })
-    }
-  }
-
-  const filteredUsers = users.filter(user => {
-    const searchLower = searchTerm.toLowerCase()
-    return (
-      user.email?.toLowerCase().includes(searchLower) ||
-      user.firstname?.toLowerCase().includes(searchLower) ||
-      user.lastname?.toLowerCase().includes(searchLower) ||
-      user.role.toLowerCase().includes(searchLower)
+      )
     )
-  })
 
-  if (loading) {
-    return <div className="flex justify-center p-4">Loading...</div>
+    toast({
+      title: 'Role updated',
+      description: 'Demo user role updated locally.',
+    })
   }
+
+  const filteredUsers = useMemo(() => {
+    const searchLower = searchTerm.toLowerCase()
+    return users.filter((user) => {
+      return (
+        user.email?.toLowerCase().includes(searchLower) ||
+        user.firstname?.toLowerCase().includes(searchLower) ||
+        user.lastname?.toLowerCase().includes(searchLower) ||
+        user.role.toLowerCase().includes(searchLower)
+      )
+    })
+  }, [searchTerm, users])
 
   return (
     <div className="space-y-4 p-4">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">User Management</h2>
         <Input
           placeholder="Search users..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(event) => setSearchTerm(event.target.value)}
           className="max-w-xs"
         />
       </div>
@@ -130,7 +119,7 @@ export function UserManagement() {
         </TableHeader>
         <TableBody>
           {filteredUsers.map((user) => {
-            const RoleIcon = roleIcons[user.role as keyof typeof roleIcons] || User
+            const RoleIcon = roleIcons[user.role] || User
             return (
               <TableRow key={user.id}>
                 <TableCell>
@@ -147,7 +136,9 @@ export function UserManagement() {
                 <TableCell>
                   <Select
                     value={user.role}
-                    onValueChange={(value: UserRole) => updateUserRole(user.id, value)}
+                    onValueChange={(value: UserRole) =>
+                      updateUserRole(user.id, value)
+                    }
                   >
                     <SelectTrigger className="w-[120px]">
                       <SelectValue />

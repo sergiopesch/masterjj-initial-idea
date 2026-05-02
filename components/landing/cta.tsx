@@ -1,54 +1,49 @@
-"use client"
+'use client';
 
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import Link from "next/link"
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export function CallToAction() {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32">
+    <section className="flow-section w-full bg-card/80 py-20 md:py-28">
       <div className="container px-4 md:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-          className="flex flex-col items-center space-y-4 text-center"
+        <div
+          className="flow-panel grid gap-8 p-6 md:grid-cols-[1fr_auto] md:items-center md:p-10"
         >
-          <div className="space-y-2">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-              Ready to start your journey?
+          <div className="max-w-3xl">
+            <p className="text-xs font-semibold uppercase text-primary">
+              Start quietly
+            </p>
+            <h2 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">
+              Keep the path simple. Keep showing up.
             </h2>
-            <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Join our community of martial artists and begin your path to mastery
-              today.
+            <p className="mt-5 text-lg leading-8 text-muted-foreground">
+              Begin with one intention, one note, and one correction you are
+              willing to meet again tomorrow.
             </p>
           </div>
-          <div className="w-full max-w-sm space-y-2">
-            <form className="flex space-x-2">
-              <Input
-                className="max-w-lg flex-1"
-                placeholder="Enter your email"
-                type="email"
-              />
-              <Button type="submit">Get Started</Button>
-            </form>
-            <p className="text-xs text-muted-foreground">
-              By signing up, you agree to our{" "}
-              <Link className="underline underline-offset-2" href="#">
-                Terms & Conditions
+
+          <div className="flex flex-col gap-3 sm:flex-row md:flex-col">
+            <Button asChild size="lg" className="h-12 gap-2 px-6 text-base">
+              <Link href="/auth/sign-up">
+                Begin the path
+                <ArrowRight className="h-4 w-4" />
               </Link>
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4 mt-8">
-            <Button variant="outline" size="lg">
-              Book a Free Class
             </Button>
-            <Button size="lg">Start Free Trial</Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="h-12 gap-2 border-foreground/20 bg-transparent px-6 text-base"
+            >
+              <Link href="/login">
+                Log in
+              </Link>
+            </Button>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
-  )
+  );
 }

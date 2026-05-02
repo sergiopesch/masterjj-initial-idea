@@ -1,96 +1,63 @@
-"use client"
+'use client';
 
-import { motion } from "framer-motion"
-import { Star } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { CircleDot } from 'lucide-react';
 
-const testimonials = [
+const pathNotes = [
   {
-    name: "Alex Silva",
-    role: "BJJ Black Belt",
+    title: 'Calm is trained',
+    label: 'Breath',
     content:
-      "This platform has revolutionized how I manage my training. The video comparison feature is a game-changer for technique analysis!",
-    avatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=200&h=200&auto=format&fit=crop",
+      'Start with the body. Track when breath shortens, posture collapses, or urgency takes over.',
   },
   {
-    name: "Maria Santos",
-    role: "BJJ Instructor",
+    title: 'Simple is deep',
+    label: 'Technique',
     content:
-      "As an instructor, this platform makes it easy to organize classes and track my students' progress. The analytics are invaluable.",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&auto=format&fit=crop",
+      'Return to the same fundamental until it becomes reliable under pressure.',
   },
   {
-    name: "John Doe",
-    role: "BJJ Enthusiast",
+    title: 'Progress is conduct',
+    label: 'Character',
     content:
-      "The performance insights have helped me identify areas for improvement I never noticed before. My game has improved significantly.",
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&auto=format&fit=crop",
+      'The record is not a scoreboard. It is a mirror for discipline, patience, and the next honest action.',
   },
-]
+];
 
 export function Testimonials() {
   return (
-    <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32">
+    <section id="testimonials" className="flow-section w-full bg-card/70 py-20 md:py-28">
       <div className="container px-4 md:px-6">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <div className="space-y-2">
-            <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">
-              Testimonials
-            </div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-              Trusted by BJJ practitioners worldwide
-            </h2>
-            <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Hear what our community has to say about their experience with BJJ
-              Master.
+        <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+          <div className="max-w-2xl">
+            <p className="text-xs font-semibold uppercase text-primary">
+              The path
             </p>
+            <h2 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">
+              Built for the practitioner you become between rounds.
+            </h2>
           </div>
         </div>
-        <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3 mt-12">
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
+
+        <div className="mt-14 grid gap-4 md:grid-cols-3">
+          {pathNotes.map((note, index) => (
+            <article
+              key={note.title}
+              className={`flow-card bg-background/85 p-6 ${index === 1 ? 'md:mt-6' : ''}`}
             >
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex flex-col items-center space-y-4">
-                    <Avatar className="h-16 w-16">
-                      <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
-                      <AvatarFallback>
-                        {testimonial.name.split(" ").map((n) => n[0]).join("")}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="text-center space-y-1">
-                      <h3 className="font-bold">{testimonial.name}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {testimonial.role}
-                      </p>
-                    </div>
-                    <div className="flex space-x-1">
-                      {Array(5)
-                        .fill(null)
-                        .map((_, i) => (
-                          <Star
-                            key={i}
-                            className="h-4 w-4 fill-primary text-primary"
-                          />
-                        ))}
-                    </div>
-                    <p className="text-sm text-muted-foreground text-center">
-                      "{testimonial.content}"
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+              <div className="mb-8 flex items-center justify-between">
+                <CircleDot className="h-5 w-5 text-primary" />
+                <span className="text-xs font-medium uppercase text-muted-foreground">
+                  {note.label}
+                </span>
+              </div>
+              <h3 className="text-2xl font-semibold">{note.title}</h3>
+              <p className="mt-4 text-sm leading-6 text-muted-foreground">
+                {note.content}
+              </p>
+            </article>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }

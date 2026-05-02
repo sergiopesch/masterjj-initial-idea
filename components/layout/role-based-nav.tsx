@@ -28,7 +28,7 @@ const roleBasedLinks = {
   instructor: [
     { href: '/home', label: 'Home', icon: BookOpen },
     { href: '/my-classes', label: 'My Classes', icon: Calendar },
-    { href: '/students', label: 'My Students', icon: Users },
+    { href: '/students', label: 'Practitioners', icon: Users },
     { href: '/profile', label: 'Profile', icon: User },
   ],
   student: [
@@ -80,7 +80,7 @@ export function RoleBasedNav() {
           {links.map((link) => (
             <Link
               key={link.href}
-              href={link.href}
+              href={link.href as any}
               className={cn(
                 'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground',
                 pathname === link.href ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'

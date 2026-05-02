@@ -1,12 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Calendar, Award, Clock, TrendingUp } from 'lucide-react'
-import { toast } from '@/components/ui/use-toast'
-import type { Database, UserProfile } from '@/lib/types/database'
+import type { UserProfile } from '@/lib/types/database'
 
 interface ClassSession {
   id: string
@@ -28,67 +26,57 @@ export function StudentDashboard() {
   const [upcomingClasses, setUpcomingClasses] = useState<ClassSession[]>([])
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [loading, setLoading] = useState(true)
-  const supabase = createClientComponentClient<Database>()
 
   useEffect(() => {
     loadDashboardData()
   }, [])
 
   async function loadDashboardData() {
-    try {
-      // Get user profile
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Not authenticated')
+    setProfile({
+      id: 'demo-student',
+      firstname: 'Sergio',
+      lastname: 'Practitioner',
+      email: 'demo@masterjj.app',
+      phone: '+10000000003',
+      role: 'student',
+      created_at: new Date(2026, 0, 10).toISOString(),
+      last_sign_in_at: new Date().toISOString(),
+      is_anonymous: false,
+      auth_provider: 'demo',
+    })
 
-      const { data: profileData } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', user.id)
-        .single()
+    setUpcomingClasses([
+      {
+        id: '1',
+        title: 'Beginner BJJ',
+        date: '2026-05-04',
+        time: '09:00',
+        instructor: 'John Doe'
+      },
+      {
+        id: '2',
+        title: 'Advanced BJJ',
+        date: '2026-05-04',
+        time: '10:30',
+        instructor: 'Jane Smith'
+      }
+    ])
 
-      setProfile(profileData)
-
-      // In a real app, you would fetch this data from your database
-      setUpcomingClasses([
-        {
-          id: '1',
-          title: 'Beginner BJJ',
-          date: '2024-01-10',
-          time: '09:00',
-          instructor: 'John Doe'
-        },
-        {
-          id: '2',
-          title: 'Advanced BJJ',
-          date: '2024-01-10',
-          time: '10:30',
-          instructor: 'Jane Smith'
-        }
-      ])
-
-      setAchievements([
-        {
-          id: '1',
-          title: 'White Belt',
-          date: '2023-12-01',
-          description: 'Started your BJJ journey'
-        },
-        {
-          id: '2',
-          title: 'First Submission',
-          date: '2023-12-15',
-          description: 'Successfully executed your first submission'
-        }
-      ])
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to load dashboard data',
-        variant: 'destructive',
-      })
-    } finally {
-      setLoading(false)
-    }
+    setAchievements([
+      {
+        id: '1',
+        title: 'White Belt',
+        date: '2026-01-01',
+        description: 'Started your BJJ journey'
+      },
+      {
+        id: '2',
+        title: 'First Submission',
+        date: '2026-02-15',
+        description: 'Successfully executed your first submission'
+      }
+    ])
+    setLoading(false)
   }
 
   if (loading) {

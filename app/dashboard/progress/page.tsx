@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { getUser } from "@/lib/auth"
 import {
@@ -29,12 +30,12 @@ import {
 } from "recharts"
 
 const attendanceData = [
-  { month: "Jan", students: 35 },
-  { month: "Feb", students: 42 },
-  { month: "Mar", students: 45 },
-  { month: "Apr", students: 50 },
-  { month: "May", students: 48 },
-  { month: "Jun", students: 52 },
+  { month: "Jan", practitioners: 35 },
+  { month: "Feb", practitioners: 42 },
+  { month: "Mar", practitioners: 45 },
+  { month: "Apr", practitioners: 50 },
+  { month: "May", practitioners: 48 },
+  { month: "Jun", practitioners: 52 },
 ]
 
 const progressData = [
@@ -55,18 +56,24 @@ const beltDistribution = [
 export default function ProgressPage() {
   const router = useRouter()
   const user = getUser()
+  const canAccess = !!user && ["admin", "instructor"].includes(user.role)
 
-  if (!user || !["admin", "instructor"].includes(user.role)) {
-    router.push("/dashboard")
+  useEffect(() => {
+    if (!canAccess) {
+      router.push("/dashboard")
+    }
+  }, [canAccess, router])
+
+  if (!canAccess) {
     return null
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Progress Tracking</h1>
+        <h1 className="text-3xl font-bold">Progress Tracking</h1>
         <p className="text-muted-foreground">
-          Monitor student progress and class performance
+          Monitor practice consistency, technical themes, and readiness.
         </p>
       </div>
 
@@ -75,8 +82,8 @@ export default function ProgressPage() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Class Attendance</CardTitle>
-                <CardDescription>Monthly attendance overview</CardDescription>
+                <CardTitle>Practice Consistency</CardTitle>
+                <CardDescription>Monthly training overview</CardDescription>
               </div>
               <Select defaultValue="6months">
                 <SelectTrigger className="w-[140px]">
@@ -100,7 +107,7 @@ export default function ProgressPage() {
                   <Tooltip />
                   <Line
                     type="monotone"
-                    dataKey="students"
+                    dataKey="practitioners"
                     stroke="hsl(var(--primary))"
                     strokeWidth={2}
                   />
@@ -150,7 +157,7 @@ export default function ProgressPage() {
           <CardHeader>
             <CardTitle>Belt Distribution</CardTitle>
             <CardDescription>
-              Current distribution of belt ranks among students
+              Current distribution of belt ranks among practitioners
             </CardDescription>
           </CardHeader>
           <CardContent>

@@ -1,72 +1,92 @@
-"use client"
+'use client';
 
-import { motion } from "framer-motion"
-import { Play } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Play, Search, Shield, TimerReset } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+const techniqueRows = [
+  ['Closed guard posture', 'Watch again', '12 min'],
+  ['Mount maintenance', 'Drill tonight', '8 min'],
+  ['Back control retention', 'Ask coach', '16 min'],
+  ['Collar choke entries', 'Keep simple', '9 min'],
+];
 
 export function VideoShowcase() {
   return (
-    <section id="video-showcase" className="w-full py-12 md:py-24 lg:py-32 bg-muted/50">
+    <section id="video-showcase" className="flow-section w-full bg-foreground py-20 text-background md:py-28">
       <div className="container px-4 md:px-6">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <div className="space-y-2">
-            <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">
-              Video Showcase
-            </div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-              Learn from the best instructors
-            </h2>
-            <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Watch world-class BJJ practitioners demonstrate techniques and share their knowledge.
+        <div className="grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
+          <div>
+            <p className="text-xs font-semibold uppercase text-primary">
+              Study
             </p>
-          </div>
-        </div>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-          className="mt-12 grid gap-6 md:grid-cols-2"
-        >
-          <div className="relative aspect-video overflow-hidden rounded-xl bg-muted">
-            <div className="absolute inset-0 flex items-center justify-center z-10">
-              <Button
-                size="lg"
-                className="h-16 w-16 rounded-full"
-                variant="secondary"
-              >
-                <Play className="h-6 w-6" />
-                <span className="sr-only">Play video</span>
-              </Button>
+            <h2 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">
+              Study only what serves the next practice.
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-background/70">
+              The library is not a place to collect moves. It is a place to
+              sharpen attention around the position you are actually working.
+            </p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+              {[
+                { icon: Search, label: 'Position search' },
+                { icon: Shield, label: 'Fundamental filters' },
+                { icon: TimerReset, label: 'Round notes' },
+              ].map((item) => (
+                <div key={item.label} className="rounded-md border border-background/15 bg-background/[0.04] p-4 transition hover:-translate-y-1 hover:border-primary/35">
+                  <item.icon className="mb-4 h-5 w-5 text-primary" />
+                  <p className="text-sm font-medium">{item.label}</p>
+                </div>
+              ))}
             </div>
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10" />
           </div>
-          <div className="relative aspect-video overflow-hidden rounded-xl bg-muted">
-            <div className="absolute inset-0 flex items-center justify-center z-10">
-              <Button
-                size="lg"
-                className="h-16 w-16 rounded-full"
-                variant="secondary"
-              >
-                <Play className="h-6 w-6" />
-                <span className="sr-only">Play video</span>
-              </Button>
+
+          <div className="rounded-md border border-background/15 bg-background/[0.04] p-3 shadow-2xl shadow-black/20 lg:rotate-1">
+            <div className="grid min-h-[330px] overflow-hidden rounded-md bg-background text-foreground md:grid-cols-[1.15fr_0.85fr]">
+              <div className="relative flex min-h-[260px] items-center justify-center overflow-hidden bg-foreground">
+                <div className="absolute left-5 top-5 rounded-md border border-background/20 bg-foreground/90 px-3 py-2 text-xs font-medium text-background backdrop-blur">
+                  Study: closed guard posture
+                </div>
+                <Button className="relative h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:bg-primary/90">
+                  <Play className="h-6 w-6" />
+                  <span className="sr-only">Play technique lesson</span>
+                </Button>
+                <div className="absolute bottom-5 left-5 right-5">
+                  <div className="h-px bg-background/20">
+                    <div className="h-px w-2/3 bg-background" />
+                  </div>
+                  <div className="mt-3 flex justify-between text-xs font-medium text-background/75">
+                    <span>00:42</span>
+                    <span>One detail</span>
+                    <span>02:18</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4">
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="font-semibold">Study queue</h3>
+                  <span className="border border-border px-2 py-1 text-xs font-medium">
+                    Lean
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  {techniqueRows.map(([title, belt, clips]) => (
+                    <div key={title} className="rounded-md border border-border/80 bg-card p-3 transition hover:-translate-y-0.5 hover:border-primary/30">
+                      <div className="flex items-start justify-between gap-4">
+                        <p className="text-sm font-medium">{title}</p>
+                        <span className="shrink-0 text-xs text-muted-foreground">
+                          {clips}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs text-muted-foreground">{belt}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10" />
-          </div>
-        </motion.div>
-        <div className="grid gap-6 md:grid-cols-3 mt-6">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-muted">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10" />
-          </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-muted">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10" />
-          </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-muted">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10" />
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from "@/providers/auth-provider"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Calendar, GraduationCap, Trophy, Users } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
@@ -24,25 +24,25 @@ export default function DashboardPage() {
 
   const stats = [
     {
-      title: "Upcoming Classes",
+      title: "Next Session",
       value: "3",
       description: "This week",
       icon: Calendar,
     },
     {
-      title: "Techniques Learned",
-      value: "24",
-      description: "Last 30 days",
+      title: "Current Focus",
+      value: "Mount",
+      description: "Base and pressure",
       icon: GraduationCap,
     },
     {
-      title: "Achievements",
+      title: "Corrections",
       value: "5",
-      description: "Total earned",
+      description: "To revisit",
       icon: Trophy,
     },
     {
-      title: profile.role === 'instructor' ? "Active Students" : "Training Partners",
+      title: profile.role === 'instructor' ? "Practitioners" : "Training Partners",
       value: "12",
       description: "In your circle",
       icon: Users,
@@ -51,18 +51,21 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">
-          Welcome back, {profile.firstname}!
+      <div className="flow-panel overflow-hidden p-6 md:p-8">
+        <p className="mb-3 text-xs font-semibold uppercase text-primary">
+          Today&apos;s rhythm
+        </p>
+        <h1 className="text-3xl font-bold">
+          Welcome back, {profile.firstname}.
         </h1>
-        <p className="text-muted-foreground">
-          Here's what's happening with your BJJ journey today.
+        <p className="mt-2 max-w-2xl text-muted-foreground">
+          Set the intention, review the last lesson, and keep the path simple.
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
-          <Card key={stat.title}>
+        {stats.map((stat, index) => (
+          <Card key={stat.title} className={index % 2 === 1 ? "lg:mt-5" : ""}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 {stat.title}

@@ -1,66 +1,76 @@
-# MasterJJ - BJJ Training Platform
+# MasterJJ
 
-A modern platform for Brazilian Jiu-Jitsu practitioners and instructors to enhance their training experience through technology. Built with Next.js and secured with passwordless authentication.
+MasterJJ is minimal Brazilian Jiu-Jitsu academy software for class scheduling,
+curriculum, student progress, promotion readiness, and coach feedback. The
+visual direction is restrained and greyscale-led: calm surfaces, sparse
+typography, and small red accents for important actions.
 
-## 🥋 Features
+## App Preview
 
-- **Smart Scheduling**: Get personalized class recommendations based on your skill level and availability
-- **HD Video Library**: Access high-quality technique videos from world-class instructors
-- **Progress Tracking**: Monitor your improvement with advanced analytics
-- **Community Integration**: Connect with training partners and join technique study groups
-- **Achievement System**: Track your progression with badges and milestones
-- **Technique Journal**: Document your learning journey with notes, videos, and insights
-- **Secure Authentication**: Passwordless email authentication for enhanced security
+![MasterJJ desktop landing page](public/images/masterjj-home-desktop.png)
 
-## 🚀 Tech Stack
+![MasterJJ mobile landing page](public/images/masterjj-home-mobile.png)
 
-- **Frontend**: Next.js with TypeScript
-- **Styling**: Tailwind CSS
-- **UI Components**: Radix UI
-- **Authentication**: Supabase
-- **Animation**: Framer Motion
-- **Icons**: Lucide Icons
+## Highlights
 
-## 🛠️ Getting Started
+- **Minimal academy ledger**: View classes, attendance, capacity, and
+  instructor priorities without dashboard noise.
+- **Promotion readiness**: Track belt criteria, skill coverage, and student
+  readiness signals instead of relying on scattered notes.
+- **Technique study**: Organize clips by position, belt level, class, and
+  assignment so video supports the curriculum.
+- **Training journals**: Give students a place to record lessons, sparring
+  notes, and goals that coaches can review.
+- **Role-aware workflows**: Support students, instructors, and admins with
+  local demo authentication and dashboard surfaces.
+- **Responsive UI**: Includes refreshed desktop and mobile screenshots captured
+  from the actual app.
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/sergiopesch/masterjj.git
-   cd masterjj
-   ```
+## Tech Stack
 
-2. Install dependencies:
+- Next.js 16 with the App Router
+- TypeScript
+- Tailwind CSS
+- Radix UI components
+- Local demo auth state for preview deployments
+- Recharts for dashboard analytics
+- Lucide icons
+
+## Getting Started
+
+1. Install dependencies:
+
    ```bash
    npm install
    ```
 
-3. Set up environment variables:
-   - Copy `.env.example` to `.env.local`
-   - Add your Supabase credentials:
-     ```
-     NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-     NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-     ```
+2. Start the development server:
 
-4. Run the development server:
    ```bash
    npm run dev
    ```
 
-Visit `http://localhost:3000` to see the application running.
+3. Open `http://localhost:3000`.
 
-## 🔐 Authentication Flow
+## Verification
 
-The application uses Supabase's passwordless authentication:
-1. Users enter their email address
-2. A magic link is sent to their email
-3. Clicking the link authenticates them securely
-4. No passwords to remember or manage
+Use these commands before shipping changes:
 
-## 🤝 Contributing
+```bash
+npm run type-check
+npm run build
+```
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+The app does not require external service credentials for local or Vercel
+preview builds.
 
-## 📝 License
+## Screenshot Refresh
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+The README images live in `public/images/`.
+
+To refresh them, run the app locally and capture:
+
+```bash
+playwright screenshot --full-page --viewport-size=1440,1100 http://127.0.0.1:3000 public/images/masterjj-home-desktop.png
+playwright screenshot --full-page --viewport-size=390,1200 http://127.0.0.1:3000 public/images/masterjj-home-mobile.png
+```

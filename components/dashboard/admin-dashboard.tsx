@@ -1,11 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { UserManagement } from '@/components/admin/user-management'
 import { Users, Award, Calendar, TrendingUp } from 'lucide-react'
-import type { Database } from '@/lib/types/database'
 
 interface DashboardStat {
   title: string
@@ -15,49 +12,12 @@ interface DashboardStat {
 }
 
 export function AdminDashboard() {
-  const [stats, setStats] = useState<DashboardStat[]>([
-    { title: 'Total Users', value: 0, icon: Users, description: 'Active users in the system' },
-    { title: 'Instructors', value: 0, icon: Award, description: 'Active instructors' },
-    { title: 'Classes', value: 0, icon: Calendar, description: 'Total classes scheduled' },
-    { title: 'Growth', value: 0, icon: TrendingUp, description: 'New users this month' },
-  ])
-  const supabase = createClientComponentClient<Database>()
-
-  useEffect(() => {
-    loadStats()
-  }, [])
-
-  async function loadStats() {
-    try {
-      // Get total users
-      const { count: totalUsers } = await supabase
-        .from('users')
-        .select('*', { count: 'exact' })
-
-      // Get instructor count
-      const { count: instructorCount } = await supabase
-        .from('users')
-        .select('*', { count: 'exact' })
-        .eq('role', 'instructor')
-
-      // Get new users this month
-      const thirtyDaysAgo = new Date()
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-      const { count: newUsers } = await supabase
-        .from('users')
-        .select('*', { count: 'exact' })
-        .gte('created_at', thirtyDaysAgo.toISOString())
-
-      setStats([
-        { title: 'Total Users', value: totalUsers || 0, icon: Users, description: 'Active users in the system' },
-        { title: 'Instructors', value: instructorCount || 0, icon: Award, description: 'Active instructors' },
-        { title: 'Classes', value: 0, icon: Calendar, description: 'Total classes scheduled' },
-        { title: 'Growth', value: newUsers || 0, icon: TrendingUp, description: 'New users this month' },
-      ])
-    } catch (error) {
-      console.error('Error loading stats:', error)
-    }
-  }
+  const stats: DashboardStat[] = [
+    { title: 'Total Users', value: 3, icon: Users, description: 'Demo users in the system' },
+    { title: 'Instructors', value: 1, icon: Award, description: 'Active instructors' },
+    { title: 'Classes', value: 6, icon: Calendar, description: 'Total classes scheduled' },
+    { title: 'Growth', value: 2, icon: TrendingUp, description: 'New users this month' },
+  ]
 
   return (
     <div className="space-y-8 p-8">

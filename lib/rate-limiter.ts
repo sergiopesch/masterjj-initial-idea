@@ -1,4 +1,3 @@
-import { createClient } from '@supabase/supabase-js'
 import { Redis } from '@upstash/redis'
 
 const RATE_LIMIT_ATTEMPTS = 5

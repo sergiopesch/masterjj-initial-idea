@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { getUser } from "@/lib/auth"
 import {
@@ -46,9 +46,15 @@ export default function ClassesPage() {
   const router = useRouter()
   const user = getUser()
   const [date, setDate] = useState<Date | undefined>(new Date())
+  const canAccess = !!user && ["admin", "instructor"].includes(user.role)
 
-  if (!user || !["admin", "instructor"].includes(user.role)) {
-    router.push("/dashboard")
+  useEffect(() => {
+    if (!canAccess) {
+      router.push("/dashboard")
+    }
+  }, [canAccess, router])
+
+  if (!canAccess) {
     return null
   }
 
@@ -56,7 +62,7 @@ export default function ClassesPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Class Schedule</h1>
+          <h1 className="text-3xl font-bold">Class Schedule</h1>
           <p className="text-muted-foreground">
             Manage your classes and attendance
           </p>

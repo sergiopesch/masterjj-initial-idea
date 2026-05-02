@@ -1,13 +1,20 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { Providers } from '@/components/providers';
 
-const inter = Inter({ subsets: ['latin'] });
-
 export const metadata: Metadata = {
-  title: 'Master BJJ',
-  description: 'Your ultimate BJJ training platform',
+  title: 'MasterJJ | The practitioner path',
+  description:
+    'A minimal Brazilian Jiu-Jitsu platform for practitioners who train, observe, adjust, and return to the mat with purpose.',
+  icons: {
+    icon: [
+      {
+        url: '/favicon.svg',
+        type: 'image/svg+xml',
+      },
+    ],
+    shortcut: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
@@ -16,8 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className} suppressHydrationWarning>
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>

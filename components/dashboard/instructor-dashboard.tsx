@@ -1,12 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Calendar, Users, Award, Clock } from 'lucide-react'
-import { toast } from '@/components/ui/use-toast'
-import type { Database, UserProfile } from '@/lib/types/database'
+import type { UserProfile } from '@/lib/types/database'
 
 interface ClassSession {
   id: string
@@ -25,49 +23,44 @@ export function InstructorDashboard() {
   const [upcomingClasses, setUpcomingClasses] = useState<ClassSession[]>([])
   const [students, setStudents] = useState<StudentProfile[]>([])
   const [loading, setLoading] = useState(true)
-  const supabase = createClientComponentClient<Database>()
 
   useEffect(() => {
     loadDashboardData()
   }, [])
 
   async function loadDashboardData() {
-    try {
-      // In a real app, you would fetch this data from your database
-      setUpcomingClasses([
-        {
-          id: '1',
-          title: 'Beginner BJJ',
-          date: '2024-01-10',
-          time: '09:00',
-          students: 12
-        },
-        {
-          id: '2',
-          title: 'Advanced BJJ',
-          date: '2024-01-10',
-          time: '10:30',
-          students: 8
-        }
-      ])
+    setUpcomingClasses([
+      {
+        id: '1',
+        title: 'Beginner BJJ',
+        date: '2026-05-04',
+        time: '09:00',
+        students: 12
+      },
+      {
+        id: '2',
+        title: 'Advanced BJJ',
+        date: '2026-05-04',
+        time: '10:30',
+        students: 8
+      }
+    ])
 
-      // Fetch students (in a real app, this would be filtered by instructor)
-      const { data: studentsData } = await supabase
-        .from('users')
-        .select('*')
-        .eq('role', 'student')
-        .limit(5)
-
-      setStudents(studentsData || [])
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to load dashboard data',
-        variant: 'destructive',
-      })
-    } finally {
-      setLoading(false)
-    }
+    setStudents([
+      {
+        id: 'demo-student-1',
+        firstname: 'Sergio',
+        lastname: 'Practitioner',
+        email: 'demo@masterjj.app',
+        phone: '+10000000003',
+        role: 'student',
+        created_at: new Date(2026, 0, 10).toISOString(),
+        last_sign_in_at: new Date().toISOString(),
+        is_anonymous: false,
+        auth_provider: 'demo',
+      },
+    ])
+    setLoading(false)
   }
 
   if (loading) {

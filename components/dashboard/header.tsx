@@ -23,8 +23,8 @@ export function DashboardHeader() {
   }
 
   return (
-    <header className="border-b">
-      <div className="flex h-16 items-center px-6">
+    <header className="sticky top-0 z-30 border-b border-border/70 bg-background/82 backdrop-blur-xl">
+      <div className="flex h-16 items-center px-4 md:px-6">
         <div className="flex-1">
           <h2 className="text-lg font-semibold">
             Welcome back, {profile?.firstname} {profile?.lastname}
@@ -37,6 +37,7 @@ export function DashboardHeader() {
           variant="ghost"
           size="icon"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="rounded-md"
         >
           {theme === "dark" ? (
             <SunIcon className="h-5 w-5" />

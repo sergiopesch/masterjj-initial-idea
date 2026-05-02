@@ -2,34 +2,16 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-  CardFooter,
 } from "@/components/ui/card"
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { toast } from '@/components/ui/use-toast'
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { loginSchema, profileSchema, type LoginFormData, type ProfileFormData } from "@/lib/validations/auth"
-import { checkRateLimit } from "@/lib/rate-limiter"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
 import { Icons } from "@/components/ui/icons"
-import { cn } from "@/lib/utils"
 
 interface LoginState {
   isLoading: boolean;
@@ -74,29 +56,16 @@ const initialState: LoginState = {
 
 export function LoginForm() {
   const router = useRouter()
-  const supabase = createClientComponentClient()
   const [state, dispatch] = React.useReducer(loginReducer, initialState)
 
   const handleSignInWithGoogle = async () => {
-    try {
-      dispatch({ type: 'START_LOADING' })
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
-        }
-      })
-      if (error) throw error
-    } catch (error) {
-      dispatch({ type: 'SET_ERROR', error: 'Error signing in with Google' })
-      toast({
-        title: "Error",
-        description: "There was a problem signing in with Google",
-        variant: "destructive",
-      })
-    } finally {
-      dispatch({ type: 'STOP_LOADING' })
-    }
+    dispatch({ type: 'START_LOADING' })
+    toast({
+      title: 'Demo mode',
+      description: 'Opening the dashboard without an external auth provider.',
+    })
+    router.push('/dashboard')
+    dispatch({ type: 'STOP_LOADING' })
   }
 
   return (

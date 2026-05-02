@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { getUser } from "@/lib/auth"
 import {
@@ -26,15 +27,20 @@ export default function SettingsPage() {
   const router = useRouter()
   const user = getUser()
 
+  useEffect(() => {
+    if (!user) {
+      router.push("/login")
+    }
+  }, [router, user])
+
   if (!user) {
-    router.push("/login")
     return null
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+        <h1 className="text-3xl font-bold">Settings</h1>
         <p className="text-muted-foreground">
           Manage your account and preferences
         </p>

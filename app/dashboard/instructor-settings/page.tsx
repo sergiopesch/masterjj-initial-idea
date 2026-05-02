@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { getUser } from "@/lib/auth"
 import {
@@ -26,16 +27,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 export default function InstructorSettingsPage() {
   const router = useRouter()
   const user = getUser()
+  const canAccess = !!user && user.role === "instructor"
 
-  if (!user || user.role !== "instructor") {
-    router.push("/dashboard")
+  useEffect(() => {
+    if (!canAccess) {
+      router.push("/dashboard")
+    }
+  }, [canAccess, router])
+
+  if (!canAccess) {
     return null
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Instructor Settings</h1>
+        <h1 className="text-3xl font-bold">Instructor Settings</h1>
         <p className="text-muted-foreground">
           Manage your teaching preferences and class settings
         </p>
@@ -93,10 +100,10 @@ export default function InstructorSettingsPage() {
                     <SelectValue placeholder="Select class size" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="15">15 students</SelectItem>
-                    <SelectItem value="20">20 students</SelectItem>
-                    <SelectItem value="25">25 students</SelectItem>
-                    <SelectItem value="30">30 students</SelectItem>
+                    <SelectItem value="15">15 practitioners</SelectItem>
+                    <SelectItem value="20">20 practitioners</SelectItem>
+                    <SelectItem value="25">25 practitioners</SelectItem>
+                    <SelectItem value="30">30 practitioners</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -149,9 +156,9 @@ export default function InstructorSettingsPage() {
               <Separator />
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label>Student Progress Alerts</Label>
+                  <Label>Practitioner Progress Alerts</Label>
                   <p className="text-sm text-muted-foreground">
-                    Get notified of significant student achievements
+                    Get notified of meaningful readiness changes.
                   </p>
                 </div>
                 <Switch defaultChecked />

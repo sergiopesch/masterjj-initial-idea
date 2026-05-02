@@ -51,7 +51,7 @@ export function Sidebar({ className }: { className?: string }) {
     },
     {
       href: "/dashboard/techniques" as Route,
-      title: "Techniques Library",
+      title: "Study Library",
       icon: Video,
     },
     {
@@ -68,19 +68,19 @@ export function Sidebar({ className }: { className?: string }) {
     },
     {
       href: "/dashboard/students" as Route,
-      title: "Student Management",
+      title: "Practitioners",
       icon: Users,
       role: ["admin", "instructor"],
     },
     {
       href: "/dashboard/curriculum" as Route,
-      title: "Curriculum Planning",
+      title: "Practice Planning",
       icon: ClipboardList,
       role: ["instructor"],
     },
     {
       href: "/dashboard/grading" as Route,
-      title: "Student Grading",
+      title: "Readiness",
       icon: BookCheck,
       role: ["instructor"],
     },
@@ -112,11 +112,13 @@ export function Sidebar({ className }: { className?: string }) {
   }
 
   return (
-    <nav className={cn("flex flex-col h-screen border-r", className)}>
+    <nav className={cn("sticky top-0 flex h-screen flex-col border-r border-border/70 bg-card/72 backdrop-blur-xl", className)}>
       <div className="p-6">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <BookOpen className="h-6 w-6" />
-          <span className="font-bold">Master BJJ</span>
+          <span className="flex h-9 w-9 items-center justify-center rounded-md border border-border/80 bg-background shadow-sm">
+            <BookOpen className="h-5 w-5 text-primary" />
+          </span>
+          <span className="font-bold">MasterJJ</span>
         </Link>
       </div>
       <div className="flex-1 px-4 space-y-2">
@@ -125,8 +127,8 @@ export function Sidebar({ className }: { className?: string }) {
             key={item.href}
             variant={pathname === item.href ? "secondary" : "ghost"}
             className={cn(
-              "w-full justify-start gap-2",
-              pathname === item.href && "bg-muted"
+              "w-full justify-start gap-2 rounded-md text-muted-foreground",
+              pathname === item.href && "bg-primary/10 text-foreground shadow-sm"
             )}
             asChild
           >
@@ -137,7 +139,7 @@ export function Sidebar({ className }: { className?: string }) {
           </Button>
         ))}
       </div>
-      <div className="p-4 mt-auto border-t">
+      <div className="p-4 mt-auto border-t border-border/70">
         <div className="mb-4 px-2">
           <p className="text-sm font-medium">{profile?.firstname} {profile?.lastname}</p>
           <p className="text-xs text-muted-foreground capitalize">{profile?.role}</p>

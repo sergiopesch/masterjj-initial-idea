@@ -3,6 +3,12 @@ export type UserRole = 'admin' | 'instructor' | 'student'
 export interface Database {
   public: {
     Tables: {
+      [key: string]: {
+        Row: Record<string, unknown>
+        Insert: Record<string, unknown>
+        Update: Record<string, unknown>
+        Relationships: []
+      }
       users: {
         Row: {
           id: string
@@ -38,12 +44,15 @@ export interface Database {
           is_anonymous?: boolean
           auth_provider?: string | null
         }
+        Relationships: []
       }
     }
-    Functions: {
+    Views: Record<string, never>
+    Functions: Record<string, never>
+    Enums: {
       [_ in never]: never
     }
-    Enums: {
+    CompositeTypes: {
       [_ in never]: never
     }
   }

@@ -1,8 +1,5 @@
-'use client'
-
-import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import {
   Card,
   CardContent,
@@ -40,14 +37,25 @@ const errorMessages: Record<ErrorCode, { title: string; message: string }> = {
   },
 }
 
-export default function AuthError() {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const errorParam = searchParams.get('error')
+interface AuthErrorPageProps {
+  searchParams?: Promise<{
+    error?: string | string[]
+  }>
+}
+
+export default async function AuthError({ searchParams }: AuthErrorPageProps) {
+  const params = await searchParams
+  const errorValue = Array.isArray(params?.error) ? params?.error[0] : params?.error
+  const errorParam = errorValue ?? null
   const errorCode = (errorParam as ErrorCode) || 'unexpected_error'
-  
+
   // Ensure the error code exists in our messages, fallback to unexpected_error if not
-  const safeErrorCode: ErrorCode = errorMessages.hasOwnProperty(errorCode) ? errorCode : 'unexpected_error'
+  const safeErrorCode: ErrorCode = Object.prototype.hasOwnProperty.call(
+    errorMessages,
+    errorCode
+  )
+    ? errorCode
+    : 'unexpected_error'
   const errorInfo = errorMessages[safeErrorCode]
 
   return (
@@ -62,18 +70,11 @@ export default function AuthError() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <Button
-            onClick={() => router.push('/auth/sign-in')}
-            className="w-full"
-          >
-            Try Again
+          <Button asChild className="w-full">
+            <Link href="/auth/sign-in">Try Again</Link>
           </Button>
-          <Button
-            variant="outline"
-            onClick={() => router.push('/')}
-            className="w-full"
-          >
-            Back to Home
+          <Button asChild variant="outline" className="w-full">
+            <Link href="/">Back to Home</Link>
           </Button>
         </CardContent>
       </Card>

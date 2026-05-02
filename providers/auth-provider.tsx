@@ -1,195 +1,130 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
-import type { User } from '@supabase/auth-helpers-nextjs'
-import type { Database } from '@/lib/types/database'
 import { toast } from 'sonner'
+import type { UpdateUserProfile, UserProfile } from '@/lib/types/database'
+
+interface DemoUser {
+  id: string
+  email: string
+  name: string
+}
 
 interface AuthState {
-  user: User | null
-  profile: Database['public']['Tables']['users']['Row'] | null
+  user: DemoUser | null
+  profile: UserProfile | null
   isLoading: boolean
 }
 
 interface AuthContextType extends AuthState {
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
-  updateProfile: (data: Partial<Database['public']['Tables']['users']['Update']>) => Promise<void>
+  updateProfile: (data: Partial<UpdateUserProfile>) => Promise<void>
+}
+
+const STORAGE_KEY = 'masterjj_demo_profile'
+
+const demoProfile: UserProfile = {
+  id: 'demo-user',
+  firstname: 'Sergio',
+  lastname: 'Practitioner',
+  email: 'demo@masterjj.app',
+  phone: '+10000000000',
+  role: 'student',
+  created_at: new Date(2026, 0, 1).toISOString(),
+  last_sign_in_at: new Date().toISOString(),
+  is_anonymous: false,
+  auth_provider: 'demo',
+}
+
+const demoUser: DemoUser = {
+  id: demoProfile.id,
+  email: demoProfile.email ?? 'demo@masterjj.app',
+  name: `${demoProfile.firstname} ${demoProfile.lastname}`,
+}
+
+function readProfile(): UserProfile {
+  if (typeof window === 'undefined') return demoProfile
+
+  const stored = window.localStorage.getItem(STORAGE_KEY)
+  if (!stored) return demoProfile
+
+  try {
+    return { ...demoProfile, ...JSON.parse(stored) }
+  } catch {
+    return demoProfile
+  }
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
   const [state, setState] = useState<AuthState>({
     user: null,
     profile: null,
     isLoading: true,
   })
 
-  const router = useRouter()
-  const supabase = createClientComponentClient<Database>()
-
   const refreshProfile = async () => {
-    try {
-      console.log('Refreshing profile...')
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-      
-      if (sessionError) {
-        console.error('Session error:', sessionError)
-        setState(prev => ({ ...prev, profile: null, user: null, isLoading: false }))
-        return
-      }
-
-      if (!session?.user) {
-        console.log('No session found')
-        setState(prev => ({ ...prev, profile: null, user: null, isLoading: false }))
-        return
-      }
-
-      // Debug: Log user metadata from session
-      console.log('User Metadata:', {
-        id: session.user.id,
-        email: session.user.email,
-        metadata: session.user.user_metadata,
-      })
-
-      setState(prev => ({ ...prev, user: session.user }))
-
-      // Try to get existing profile
-      const { data: profile, error: profileError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', session.user.id)
-        .single()
-
-      // If profile exists, update state and check completeness
-      if (profile) {
-        console.log('Existing profile found:', profile)
-        setState(prev => ({
-          ...prev,
-          profile,
-          isLoading: false
-        }))
-
-        // Check if profile needs completion
-        if (!profile.phone || !profile.firstname || !profile.lastname) {
-          console.log('Profile incomplete, redirecting to complete profile')
-          router.push('/auth/complete-profile')
-        }
-        return
-      }
-
-      // If no profile exists (either error or null result), create one
-      console.log('No profile found, creating initial profile')
-      const names = session.user.user_metadata?.name?.split(' ') || []
-      const firstname = names[0] || ''
-      const lastname = names.slice(1).join(' ') || ''
-
-      const { data: newProfile, error: createError } = await supabase
-        .from('users')
-        .insert({
-          id: session.user.id,
-          email: session.user.email,
-          firstname,
-          lastname,
-          role: 'student',
-          created_at: new Date().toISOString(),
-          last_sign_in_at: new Date().toISOString(),
-          is_anonymous: false,
-          auth_provider: 'google'
-        })
-        .select()
-        .single()
-
-      if (createError) {
-        console.error('Failed to create profile:', createError)
-        setState(prev => ({ ...prev, profile: null, isLoading: false }))
-        return
-      }
-
-      console.log('Created new profile:', newProfile)
-      setState(prev => ({
-        ...prev,
-        profile: newProfile,
-        isLoading: false
-      }))
-
-      // Always redirect to complete profile for new users
-      router.push('/auth/complete-profile')
-    } catch (error) {
-      console.error('Error in profile operations:', error)
-      setState(prev => ({ ...prev, profile: null, isLoading: false }))
-    }
+    const profile = readProfile()
+    setState({
+      user: {
+        id: profile.id,
+        email: profile.email ?? demoUser.email,
+        name: `${profile.firstname ?? ''} ${profile.lastname ?? ''}`.trim(),
+      },
+      profile,
+      isLoading: false,
+    })
   }
 
-  const updateProfile = async (data: Partial<Database['public']['Tables']['users']['Update']>) => {
-    try {
-      if (!state.user?.id) {
-        throw new Error('No user ID available')
-      }
-
-      const { error } = await supabase
-        .from('users')
-        .update(data)
-        .eq('id', state.user.id)
-
-      if (error) throw error
-
-      toast.success('Profile updated successfully')
-      await refreshProfile()
-      router.push('/dashboard')
-    } catch (error) {
-      console.error('Error updating profile:', error)
-      toast.error('Failed to update profile')
+  const updateProfile = async (data: Partial<UpdateUserProfile>) => {
+    const nextProfile = {
+      ...(state.profile ?? demoProfile),
+      ...data,
+      last_sign_in_at: new Date().toISOString(),
     }
+
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextProfile))
+    }
+
+    setState({
+      user: {
+        id: nextProfile.id,
+        email: nextProfile.email ?? demoUser.email,
+        name: `${nextProfile.firstname ?? ''} ${nextProfile.lastname ?? ''}`.trim(),
+      },
+      profile: nextProfile,
+      isLoading: false,
+    })
+
+    toast.success('Profile updated')
   }
 
   const signOut = async () => {
-    try {
-      setState(prev => ({ ...prev, isLoading: true }))
-      await supabase.auth.signOut()
-      setState({ user: null, profile: null, isLoading: false })
-      router.push('/auth/sign-in')
-    } catch (error) {
-      console.error('Error signing out:', error)
-      setState(prev => ({ ...prev, isLoading: false }))
-    }
+    setState({ user: null, profile: null, isLoading: false })
+    router.push('/')
   }
 
   useEffect(() => {
-    let mounted = true
-    
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session?.user?.email)
-      if (session && mounted) {
-        await refreshProfile()
-      } else {
-        setState({ user: null, profile: null, isLoading: false })
-      }
-    })
-
-    if (mounted) {
-      refreshProfile()
-    }
-
-    return () => {
-      mounted = false
-      subscription.unsubscribe()
-    }
+    refreshProfile()
   }, [])
 
-  const value = {
-    ...state,
-    signOut,
-    refreshProfile,
-    updateProfile,
-  }
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider
+      value={{
+        ...state,
+        signOut,
+        refreshProfile,
+        updateProfile,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export function useAuth() {

@@ -1,85 +1,47 @@
-"use client"
+'use client';
 
-import { motion } from "framer-motion"
-import { CheckCircle } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
+import { CheckCircle2 } from 'lucide-react';
 
-const benefits = [
-  {
-    title: "Personalized Learning Path",
-    description:
-      "Get a customized training program based on your skill level and goals.",
-  },
-  {
-    title: "Expert Instruction",
-    description:
-      "Learn from world-class instructors with proven teaching methodologies.",
-  },
-  {
-    title: "Progress Tracking",
-    description:
-      "Monitor your improvement with detailed analytics and performance metrics.",
-  },
-  {
-    title: "Community Support",
-    description:
-      "Connect with fellow practitioners and share your martial arts journey.",
-  },
-  {
-    title: "Flexible Schedule",
-    description:
-      "Train at your own pace with 24/7 access to video content and resources.",
-  },
-  {
-    title: "Regular Updates",
-    description:
-      "Access new techniques and training materials added weekly to the platform.",
-  },
-]
+const outcomes = [
+  'You arrive with one technical intention instead of vague ambition.',
+  'You see patterns in the positions that keep breaking under pressure.',
+  'You keep coach feedback close to the exact mistake it corrects.',
+  'You study fewer techniques and apply them with more attention.',
+  'You measure consistency without turning the journey into a leaderboard.',
+  'You leave each session with one clear thing to repair.',
+];
 
 export function Benefits() {
   return (
-    <section id="benefits" className="w-full py-12 md:py-24 lg:py-32 bg-muted/50">
+    <section id="benefits" className="flow-section relative overflow-hidden py-20 md:py-28">
       <div className="container px-4 md:px-6">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <div className="space-y-2">
-            <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">
-              Benefits
-            </div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-              Why choose BJJ Master?
+        <div className="grid gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
+          <div className="lg:sticky lg:top-24">
+            <p className="text-xs font-semibold uppercase text-primary">
+              Why it works
+            </p>
+            <h2 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">
+              Discipline in the interface, discipline in the practitioner.
             </h2>
-            <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Discover the advantages of training with our comprehensive platform.
+            <p className="mt-5 text-lg leading-8 text-muted-foreground">
+              MasterJJ is designed around the lived rhythm of training: prepare,
+              drill, roll, reflect, recover, and come back with less confusion.
             </p>
           </div>
-        </div>
-        <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 mt-12">
-          {benefits.map((benefit, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-            >
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-start space-x-4">
-                    <CheckCircle className="h-6 w-6 text-primary shrink-0" />
-                    <div>
-                      <h3 className="font-bold">{benefit.title}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {benefit.description}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {outcomes.map((outcome) => (
+              <div
+                key={outcome}
+                className="flow-card bg-card/85 p-6"
+              >
+                <CheckCircle2 className="mb-6 h-5 w-5 text-primary" />
+                <p className="font-semibold leading-7">{outcome}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
-  )
+  );
 }
